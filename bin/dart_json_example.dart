@@ -37,10 +37,77 @@ void main() {
 	"dislike_foods" : [],
 	"contact": {
 		"mobile": "010-0000-0000",
-		"email": null
+		"email": null 
 	}
 }
 """;
+  // 1. jsonString -> Map 형태로
+  Map<String, dynamic> hardMap = jsonDecode(hardJson);
+
+  // 3. class를 정의했으니 객체로 만든다 (map을)
+  PetDetail petDetail = PetDetail.fromJason(hardMap);
+  print(petDetail.toJASON());
+}
+
+// 2. 객체로 바꾸기 위해서 class를 정의한다.
+class PetDetail {
+  String name;
+  int age;
+  bool isMale;
+  List<String> favoriteFoods;
+  Contact contact;
+
+  PetDetail({
+    required this.name,
+    required this.age,
+    required this.isMale,
+    required this.favoriteFoods,
+    required this.contact,
+  });
+
+  // fromJson 네임드 생성자
+  PetDetail.fromJason(Map<String, dynamic> map): this(
+    name: map['name'],
+    age: map['age'],
+    isMale: map['isMale'],
+    favoriteFoods: List<String>.from(map['favorite_foods']),
+    contact: Contact.fromJason(map['contact']),
+  );
+
+  // toJson 메서드
+  Map<String, dynamic> toJASON(){
+    return {
+      'name': name,
+      'age': age,
+      'isMale': isMale,
+      'favorite_foods': favoriteFoods,
+      'contact': contact.toJASON(),
+    };
+  }
+}
+
+class Contact {
+  // contact가 하위 정보가 있으니 클래스로 정의해준다
+  String mobile;
+  String? email; // email은 null이 올 수 있으니 '?'를 붙여준다
+
+  Contact({
+    required this.mobile,
+    required this.email,
+  });
+
+// Contact. fromJson 네임드 생성자 만들기
+  Contact.fromJason(Map<String, dynamic> map)
+      : this(
+          mobile: map['mobile'],
+          email: map['email'],
+        );
+
+// toJASON 메서드 만들기
+  Map<String, dynamic> toJASON() {
+    return 
+    {'mobile': mobile, 'email': email};
+  }
 }
 
 // 2. class를 정의한다.
