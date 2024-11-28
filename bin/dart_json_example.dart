@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 // 직렬화 : 객체를 JSON 형태의 문자열로 변환
 //         객체 -> Map -> String
 //         jsonEncode
@@ -10,49 +9,67 @@ import 'dart:convert';
 //          jsonDecode
 //          객체에 fromJason named 생성자 구현하여 사용
 
-void main(List<String> arguments) {
-  // jsonEncode : Map => String 역할!
-  //
-  Map<String, dynamic> map = {
-    "name" : "이지원",
-    "age" : 20,
-};
-
-  String jsonData = jsonEncode(map);
-  print(jsonData);
-
-  String jsonSampleDate = """
+void main() {
+  // Pet
+  String easyJson = """
 {
-  "name":"이지원",
-  "age":20
+  "name": "김영환",
+  "age": 28,
+  "isMale": true
 }
-  """;
-  var decodedData = jsonDecode(jsonSampleDate);
-  print(decodedData.runtimeType);
-  print(decodedData);
+""";
 
-  Human human = Human.fromJson(decodedData);
-  human.toJson();
+  // 1. String -> Map 형태로 바꾼다.
+  Map<String, dynamic> easyMap = jsonDecode(easyJson);
+  // 3. Map -> class 객체로 바꾼다.
+  Pet pet = Pet.fromJason(easyMap);
+  print(pet.toJson());
+
+  // PetDetail
+  // Contact
+  String hardJson = """
+{
+{
+	"name": "오상구",
+	"age": 7,
+	"isMale" : true,
+	"favorite_foods" : ["삼겹살", "연어", "고구마"],
+	"dislike_foods" : [],
+	"contact": {
+		"mobile": "010-0000-0000",
+		"email": null
+	}
+}
+""";
 }
 
-
-class Human {
+// 2. class를 정의한다.
+// name, age, isMale
+class Pet {
   String name;
   int age;
+  bool isMale;
 
-  Human({
+  Pet({
     required this.name,
     required this.age,
+    required this.isMale,
   });
 
-  Human.fromJson(Map<String, dynamic> map) : this(
-    name: map['name'],
-    age: map['age'],
-  );
-  Map<String, dynamic> toJson(){
+  // fromJson named 생성자 만들기
+  Pet.fromJason(Map<String, dynamic> map)
+      : this(
+          name: map['name'],
+          age: map['age'],
+          isMale: map['isMale'],
+        );
+
+  // Map<String, dynamic> toJson 만들기
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
       'age': age,
+      'isMale': isMale,
     };
   }
 }
